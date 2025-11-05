@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Kasir Sederhana</title>
+    <style>
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        input, button {
+            padding: 10px;
+            margin: 8px 0;
+            width: 95%;
+            box-sizing: border-box;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #hasil, #diskonInfo {
+            margin-top: 15px;
+            padding: 10px;
+            border: 1px dashed #007bff;
+            background-color: #e9f7ff;
+            border-radius: 4px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>💰 Kasir Sederhana</h1>
+
+    <div>
+        <label for="hargaBarang">Harga Barang (Rp):</label>
+        <input type="number" id="hargaBarang" placeholder="Misal: 50000" min="0" value="0">
+    </div>
+    
+    <div>
+        <label for="jumlahBeli">Jumlah Beli (Unit):</label>
+        <input type="number" id="jumlahBeli" placeholder="Misal: 3" min="1" value="1">
+    </div>
+
+    <button onclick="hitungTotal()">Hitung Total Bayar</button>
+
+    <hr>
+    
+    <h2>Detail Belanja:</h2>
+    <div id="diskonInfo"></div>
+    <div id="hasil"></div>
+
+    <script>
+        function hitungTotal() {
+            
+            const harga = parseFloat(document.getElementById('hargaBarang').value);
+            const jumlah = parseInt(document.getElementById('jumlahBeli').value);
+            const hasilElement = document.getElementById('hasil');
+            const diskonInfoElement = document.getElementById('diskonInfo');
+
+            
+            hasilElement.textContent = '';
+            diskonInfoElement.textContent = '';
+
+            
+            if (isNaN(harga) || isNaN(jumlah) || harga < 0 || jumlah <= 0) {
+                hasilElement.innerHTML = "❌ **Masukkan harga dan jumlah beli yang valid.** (Harga ≥ 0, Jumlah ≥ 1)";
+                return;
+            }
+
+            
+            const totalBelanjaAwal = harga * jumlah;
+            const batasDiskon = 100000;
+            const persentaseDiskon = 0.10; 
+            let totalBayar = totalBelanjaAwal;
+            let besarDiskon = 0;
+            let infoDiskon = `Total Belanja Awal: **Rp${formatRupiah(totalBelanjaAwal)}**`;
+
+            
+            if (totalBelanjaAwal > batasDiskon) {
+                besarDiskon = totalBelanjaAwal * persentaseDiskon;
+                totalBayar = totalBelanjaAwal - besarDiskon;
+                
+                infoDiskon += `<br>Selamat! Anda mendapat **Diskon 10%**! (Potongan: **Rp${formatRupiah(besarDiskon)}**)`;
+            } else {
+                infoDiskon += "<br>Belanja kurang dari Rp100.000. **Tidak ada diskon** yang diberikan.";
+            }
+
+           
+            diskonInfoElement.innerHTML = infoDiskon.replace(/\*\*/g, '<strong>');
+            
+            hasilElement.innerHTML = `
+                <h3>💸 Total Bayar Akhir:</h3>
+                <p style="font-size: 1.5em; color: green;"><strong>Rp${formatRupiah(totalBayar)}</strong></p>
+            `;
+        }
+
+        
+        function formatRupiah(angka) {
+            return new Intl.NumberFormat('id-ID').format(angka);
+        }
+    </script>
+
+</body>
+</html>
